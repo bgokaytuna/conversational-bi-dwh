@@ -150,6 +150,21 @@ _FIRST_NAMES = ["Ahmet", "Mehmet", "Ayşe", "Fatma", "Ali", "Zeynep",
                 "Hasan", "Meryem", "Ömer", "Büşra", "Yusuf", "Esra"]
 _LAST_NAMES  = ["Yılmaz", "Kaya", "Demir", "Çelik", "Şahin", "Yıldız",
                 "Arslan", "Doğan", "Kılıç", "Aslan", "Çetin", "Aydın"]
+
+# Shuffle separately — first_name and last_name pools are decoupled
+# so no real person can be inferred from the combination
+_SHUFFLED_FIRST = _FIRST_NAMES.copy()
+_SHUFFLED_LAST  = _LAST_NAMES.copy()
+random.shuffle(_SHUFFLED_FIRST)
+random.shuffle(_SHUFFLED_LAST)
+
+# Agent name pool — separate from customer names
+_AGENT_FIRST = ["Serkan", "Burak", "Selin", "Derya", "Emre",
+                "Canan", "Tolga", "Pınar", "Murat", "Gül"]
+_AGENT_LAST  = ["Öztürk", "Bulut", "Erdoğan", "Karaca", "Yıldırım",
+                "Aktaş", "Güneş", "Koç", "Polat", "Keskin"]
+random.shuffle(_AGENT_FIRST)
+random.shuffle(_AGENT_LAST)
 _CITIES      = ["İstanbul", "Ankara", "İzmir", "Bursa", "Antalya",
                 "Konya", "Adana", "Gaziantep", "Kayseri", "Mersin"]
 _REGIONS     = {"İstanbul": "Marmara", "Ankara": "İç Anadolu",
@@ -229,7 +244,13 @@ def _seed_dim_agent(conn: sqlite3.Connection):
         ("AGT-007", "Banka Kanalı İstanbul",    "İstanbul", "Bancassurance"),
         ("AGT-008", "Banka Kanalı Ankara",      "Ankara",   "Bancassurance"),
     ]
-    rows = [(nk, name, name, region, channel) for nk, name, region, channel in agencies]
+    # agent_name: shuffled first+last — decoupled from agency_name
+    rows = []
+    for i, (nk, agency_name, region, channel) in enumerate(agencies):
+        fn = _AGENT_FIRST[i % len(_AGENT_FIRST)]
+        ln = _AGENT_LAST[i % len(_AGENT_LAST)]
+        agent_name = f"{fn} {ln}"
+        rows.append((nk, agent_name, agency_name, region, channel))
     conn.executemany(
         "INSERT OR IGNORE INTO dim_agent "
         "(agent_nk,agent_name,agency_name,region,channel) VALUES (?,?,?,?,?)", rows
@@ -241,8 +262,8 @@ def _seed_dim_customer(conn: sqlite3.Connection, n: int = 120):
     rows = []
     for i in range(1, n + 1):
         nk      = f"CST-{i:05d}"
-        fn      = random.choice(_FIRST_NAMES)
-        ln      = random.choice(_LAST_NAMES)
+        fn      = random.choice(_SHUFFLED_FIRST)
+        ln      = random.choice(_SHUFFLED_LAST)
         gender  = random.choice(["M", "F"])
         birth   = date(random.randint(1960, 2000), random.randint(1, 12), random.randint(1, 28))
         city    = random.choice(_CITIES)
