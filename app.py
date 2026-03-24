@@ -1,7 +1,7 @@
 """
 app.py
 ======
-Conversational BI & DWH Dokümantasyon Aracı — Ana Uygulama
+Conversational BI & DWH Documentation Tool - Main App
 
 Çalıştırmak için:
     streamlit run app.py
@@ -190,7 +190,7 @@ with st.sidebar:
 
     st.divider()
     st.markdown(
-        "<small>🛠 [GitHub](https://github.com/gokaytuna) &nbsp;·&nbsp; "
+        "<small>🛠 [GitHub](https://github.com/bgokaytuna) &nbsp;·&nbsp; "
         "[LinkedIn](https://linkedin.com/in/gokaytuna)</small>",
         unsafe_allow_html=True,
     )
