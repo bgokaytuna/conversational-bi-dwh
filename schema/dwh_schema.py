@@ -247,8 +247,8 @@ def _seed_dim_agent(conn: sqlite3.Connection):
     # agent_name: shuffled first+last — decoupled from agency_name
     rows = []
     for i, (nk, agency_name, region, channel) in enumerate(agencies):
-        fn = _AGENT_FIRST[i % len(_AGENT_FIRST)]
-        ln = _AGENT_LAST[i % len(_AGENT_LAST)]
+        fn = _AGENT_FIRST[i % len(_AGENT_FIRST)][0] + "***"
+        ln = _AGENT_LAST[i % len(_AGENT_LAST)][0]  + "***"
         agent_name = f"{fn} {ln}"
         rows.append((nk, agent_name, agency_name, region, channel))
     conn.executemany(
@@ -262,8 +262,8 @@ def _seed_dim_customer(conn: sqlite3.Connection, n: int = 120):
     rows = []
     for i in range(1, n + 1):
         nk      = f"CST-{i:05d}"
-        fn      = random.choice(_SHUFFLED_FIRST)
-        ln      = random.choice(_SHUFFLED_LAST)
+        fn      = random.choice(_SHUFFLED_FIRST)[0] + "***"
+        ln      = random.choice(_SHUFFLED_LAST)[0]  + "***"
         gender  = random.choice(["M", "F"])
         birth   = date(random.randint(1960, 2000), random.randint(1, 12), random.randint(1, 28))
         city    = random.choice(_CITIES)
