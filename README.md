@@ -31,7 +31,7 @@ Veri tamamen **in-memory SQLite** — disk'e hiçbir şey yazılmaz, `pip instal
 ## Kurulum
 
 ```bash
-git clone https://github.com/gokaytuna/conversational-bi-dwh
+git clone https://github.com/bgokaytuna/conversational-bi-dwh
 cd conversational-bi-dwh
 
 pip install -r requirements.txt
